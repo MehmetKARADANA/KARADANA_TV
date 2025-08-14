@@ -3,9 +3,11 @@ package com.mobile.karadanatv.ui.screens
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Button
@@ -19,6 +21,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.mobile.karadanatv.DestinationScreen
@@ -58,7 +61,13 @@ fun VideoListScreen(videoViewModel: VideoViewModel, navController: NavController
                 .padding(it)
         ) {
             if (uiState.isLoading) {
-                CircularProgressIndicator()
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.size(50.dp))
+                }
             } else if (uiState.errorMessage != null) {
                 Text(
                     text = uiState.errorMessage!!,
@@ -71,12 +80,15 @@ fun VideoListScreen(videoViewModel: VideoViewModel, navController: NavController
             } else if (uiState.videos.isEmpty()) {
                 Text("Gösterilecek video bulunamadı.")
             } else {
-                VideosGrid( videos =uiState.videos ) {video ->
+                VideosGrid(videos = uiState.videos) { video ->
 
-                    Log.d("URL","nav url ${video.url}")
+                    Log.d("URL", "nav url ${video.url}")
                     scope.launch {
                         val playUrl = resolvePlayableUrl(video.url)
-                        navigateTo(navController, DestinationScreen.VideoPlayer.createRoute(playUrl))
+                        navigateTo(
+                            navController,
+                            DestinationScreen.VideoPlayer.createRoute(playUrl)
+                        )
                     }
                 }
             }
