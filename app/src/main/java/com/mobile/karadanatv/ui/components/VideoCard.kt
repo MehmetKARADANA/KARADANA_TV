@@ -40,10 +40,7 @@ import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import com.mobile.karadanatv.data.VideoItem
 import com.mobile.karadanatv.utils.resolvePlayableUrl
-import kotlinx.coroutines.launch
 
-/*
-@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun VideoCard(
     item: VideoItem,
@@ -51,121 +48,20 @@ fun VideoCard(
     onClick: () -> Unit = {}
 ) {
     val ctx = LocalContext.current
+
+    var thumbUrl by remember(item.thumbnail) { mutableStateOf<String?>(item.thumbnail) }
     var errorMsg by remember { mutableStateOf<String?>(null) }
 
-
-
-    val req = remember(item.thumbnail, item.url) {
-        ImageRequest.Builder(ctx)
-            .data(item.thumbnail ?: "")
-            .crossfade(true)
-            .listener(
-                onStart = { errorMsg = null },
-                onError = { _, result ->
-                    errorMsg = result.throwable.message
-                   Log.e(
-                        "Coil/Thumb",
-                        "Thumbnail yüklenemedi: ${item.thumbnail} | Hata: ${result.throwable}",
-                        result.throwable
-                    )
-                },
-                onSuccess = { _, _ -> errorMsg = null }
-            )
-            .build()
-    }
-
-    val painter = rememberAsyncImagePainter(req)
-
-    Card(
-        onClick = onClick,
-        shape = RoundedCornerShape(14.dp),
-        modifier = modifier
-            .fillMaxWidth()
-            .aspectRatio(1f)
-    ) {
-        Box {
-            Image(
-                painter = painter,
-                contentDescription = item.title,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize()
-            )
-
-            Box(
-                Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            0.0f to Color.Transparent,
-                            0.6f to Color(0x99000000),
-                            1.0f to Color(0xCC000000)
-                        )
-                    )
-            )
-Log.d("Thumbnail","e $errorMsg")
-            Row(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(10.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Default.PlayArrow,
-                    contentDescription = null,
-                    tint = Color.White
-                )
-                Spacer(Modifier.width(6.dp))
-                Text(
-                    text = item.title,
-                    color = Color.White,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold)
-                )
-            }
-        }
-    }
-}
-
-*/
-@Composable
-fun VideoCard(
-    item: VideoItem,                 // item.thumbnail gs:// olabilir; item.url video için (https olmalı)
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
-) {
-    val ctx = LocalContext.current
-
-    // 1) Thumbnail için çözümlenmiş (https) URL'yi tutacağımız state
-    var thumbUrl by remember(item.thumbnail) { mutableStateOf<String?>(null) }
-    var errorMsg by remember { mutableStateOf<String?>(null) }
-
-    // 2) gs:// → https dönüşümü: Yan etki olduğu için LaunchedEffect kullan
-    LaunchedEffect(item.thumbnail) {
-        errorMsg = null
-        thumbUrl = try {
-            val t = item.thumbnail
-            if (t.isNullOrBlank()) null
-            else if (t.startsWith("gs://")) {
-                // suspend helper: gs://'yi downloadUrl'e çevir
-                resolvePlayableUrl(t) // => https döner
-            } else t // zaten https
-        } catch (e: Exception) {
-            errorMsg = e.message
-            null
-        }
-    }
-
-    // 3) Coil isteği: thumbUrl değişirse yeniden oluşturulsun
+    println("log thumbnail card $thumbUrl and ${item.thumbnail}")
     val request = remember(thumbUrl) {
         ImageRequest.Builder(ctx)
-            .data(thumbUrl ?: "")       // sadece THUMBNAIL'i gösteriyoruz
+            .data(thumbUrl ?: "")
             .crossfade(true)
             .listener(
                 onStart = { errorMsg = null },
                 onError = { _, result ->
                     errorMsg = result.throwable.message
-                    android.util.Log.e(
+                    Log.e(
                         "Coil/Thumb",
                         "Thumbnail yüklenemedi: $thumbUrl | Hata: ${result.throwable}"
                     )

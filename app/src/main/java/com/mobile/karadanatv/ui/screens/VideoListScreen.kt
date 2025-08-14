@@ -17,6 +17,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.runtime.getValue
@@ -30,23 +31,37 @@ import com.mobile.karadanatv.ui.components.CustomAppBar
 import com.mobile.karadanatv.ui.components.CustomNavigationBar
 import com.mobile.karadanatv.ui.components.VideosGrid
 import com.mobile.karadanatv.ui.theme.Background
+import com.mobile.karadanatv.utils.CheckSignedIn
+import com.mobile.karadanatv.utils.CheckSignedOut
 import com.mobile.karadanatv.utils.ObserveErrorMessage
 import com.mobile.karadanatv.utils.navigateTo
-import com.mobile.karadanatv.utils.resolvePlayableUrl
+import com.mobile.karadanatv.viewmodels.AuthViewModel
 import com.mobile.karadanatv.viewmodels.VideoViewModel
-import kotlinx.coroutines.launch
+
 
 @Composable
-fun VideoListScreen(videoViewModel: VideoViewModel, navController: NavController) {
+fun VideoListScreen(
+    videoViewModel: VideoViewModel,
+    navController: NavController,
+    authViewModel: AuthViewModel
+) {
     val errorMessage by videoViewModel.errorMessage
 
     ObserveErrorMessage(errorMessage)
 
+
+    CheckSignedOut(authViewModel,navController)
+
     val uiState by videoViewModel.uiState.collectAsState()
-    val scope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { CustomAppBar(title = "Videolar", onBackClicked = {}, showBackButton = false) },
+        topBar = {
+            CustomAppBar(
+                title = "Videolar",
+                onRightClicked = { authViewModel.logout() },
+                showRightButton = true
+            )
+        },
         bottomBar = {
             CustomNavigationBar(
                 navController = navController,
@@ -81,15 +96,8 @@ fun VideoListScreen(videoViewModel: VideoViewModel, navController: NavController
                 Text("Gösterilecek video bulunamadı.")
             } else {
                 VideosGrid(videos = uiState.videos) { video ->
-
-                    Log.d("URL", "nav url ${video.url}")
-                    scope.launch {
-                        val playUrl = resolvePlayableUrl(video.url)
-                        navigateTo(
-                            navController,
-                            DestinationScreen.VideoPlayer.createRoute(playUrl)
-                        )
-                    }
+                    val route = DestinationScreen.VideoPlayer.createRoute(video.url)
+                    navigateTo(navController, route)
                 }
             }
 

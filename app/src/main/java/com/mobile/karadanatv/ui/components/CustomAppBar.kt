@@ -1,11 +1,11 @@
 package com.mobile.karadanatv.ui.components
 
 
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,12 +24,16 @@ import com.mobile.karadanatv.ui.theme.Background
 @Composable
 fun CustomAppBar(
     title: String,
-    showBackButton: Boolean,
-    onBackClicked: () -> Unit,
+    showBackButton: Boolean = false,
+    onBackClicked: (() -> Unit)? = null,
+    showRightButton: Boolean = false,
+    onRightClicked: (() -> Unit)? = null
 ) {
 
     Box(
-        modifier =Modifier.shadow(12.dp).background(color = Background)
+        modifier = Modifier
+            .shadow(12.dp)
+            .background(color = Background)
     ) {
         CenterAlignedTopAppBar(
             title = {
@@ -41,10 +45,21 @@ fun CustomAppBar(
             },
             navigationIcon = {
                 if (showBackButton) {
-                    IconButton(onClick = onBackClicked) {
+                    IconButton(onClick = onBackClicked ?: {}) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Geri",
+                            tint = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+            },
+            actions = {
+                if (showRightButton) {
+                    IconButton(onClick = onRightClicked ?: {}) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                            contentDescription = "Action",
                             tint = MaterialTheme.colorScheme.onSurface
                         )
                     }

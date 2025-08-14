@@ -1,5 +1,6 @@
 package com.mobile.karadanatv
 
+import android.annotation.SuppressLint
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -29,9 +31,10 @@ sealed class DestinationScreen(var route: String) {
     data object Login : DestinationScreen("login")
     data object SignUp : DestinationScreen("signup")
     data object VideoList : DestinationScreen("videolist")
-    data object VideoPlayer : DestinationScreen("video/{url}"){
-        fun createRoute(url : String) ="video/${Uri.encode(url)}"
+    data object VideoPlayer : DestinationScreen("video/{url}") {
+        fun createRoute(url: String) = "video/${Uri.encode(url)}"
     }
+
     data object LiveScreen : DestinationScreen("live")
 }
 
@@ -47,15 +50,17 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("StateFlowValueCalledInComposition")
     @Composable
     fun AppNavigation() {
         val navController = rememberNavController()
         val authViewModel: AuthViewModel by viewModels()
         val videoViewModel: VideoViewModel by viewModels()
 
+
         NavHost(
             navController = navController,
-            startDestination = Login.route
+            startDestination = if (authViewModel.signIn.value) DestinationScreen.VideoList.route else DestinationScreen.Login.route
         ) {
             composable(DestinationScreen.Login.route) {
                 LoginScreen(navController, authViewModel)
@@ -65,18 +70,22 @@ class MainActivity : ComponentActivity() {
             }
 
             composable(DestinationScreen.VideoList.route) {
-                VideoListScreen(navController=navController, videoViewModel = videoViewModel)
+                VideoListScreen(
+                    navController = navController,
+                    videoViewModel = videoViewModel,
+                    authViewModel = authViewModel
+                )
             }
 
-            composable (DestinationScreen.VideoPlayer.route){
+            composable(DestinationScreen.VideoPlayer.route) {
                 val url = it.arguments?.getString("url")
-               url?.let {
-                   Log.d("URL","url $it")
-                   VideoPlayerScreen(videoUrl =it ,navController)
-               }
+                url?.let {
+                    Log.d("URL", "url $it")
+                    VideoPlayerScreen(videoUrl = it, navController)
+                }
             }
 
-            composable (DestinationScreen.LiveScreen.route){
+            composable(DestinationScreen.LiveScreen.route) {
                 LiveScreen(navController)
             }
         }

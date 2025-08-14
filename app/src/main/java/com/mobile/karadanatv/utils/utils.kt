@@ -55,3 +55,14 @@ fun CheckSignedIn(
       navigateTo(navController, DestinationScreen.VideoList.route)
     }
 }
+
+@Composable
+fun CheckSignedOut(
+    viewModel: AuthViewModel,
+    navController: NavController
+) {
+    val signIn = viewModel.signIn.collectAsState()
+    if(!signIn.value){
+        navigateTo(navController, DestinationScreen.Login.route)
+    }
+}

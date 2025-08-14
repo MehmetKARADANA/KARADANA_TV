@@ -12,7 +12,6 @@ import androidx.navigation.NavController
 import com.mobile.karadanatv.DestinationScreen
 import com.mobile.karadanatv.ui.components.BottomNavigationMenuItem
 import com.mobile.karadanatv.ui.components.CustomAppBar
-import com.mobile.karadanatv.ui.components.CustomNavigationBar
 import com.mobile.karadanatv.ui.components.VideoPlayerContent
 import com.mobile.karadanatv.ui.theme.Background
 import com.mobile.karadanatv.utils.navigateTo

@@ -9,6 +9,7 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobile.karadanatv.data.USERS
 import com.mobile.karadanatv.data.User
+import com.mobile.karadanatv.utils.CheckSignedIn
 import com.mobile.karadanatv.utils.isShortOrLong
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -133,7 +134,6 @@ class AuthViewModel : BaseViewModel() {
                 _userData.value = updatedUser
                 onSuccess()
             } catch (e: Exception) {
-                // onError(e.localizedMessage ?: "Güncelleme başarısız.")
                 handleException(customMessage = "Güncelleme başarısız.")
             } finally {
                 _inProcess.value = false
@@ -166,6 +166,6 @@ class AuthViewModel : BaseViewModel() {
         auth.signOut()
         _userData.value = null
         _signIn.value = false
-        //log Logged Out
+        handleException(customMessage = "Çıkış Yapıldı!")
     }
 }
