@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "985398062771",
+    "project_id": "karadanatv61",
+    "storage_bucket": "karadanatv61.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985398062771:android:62f65bc4c2ad5df4920ac6",
+        "android_client_info": {
+          "package_name": "com.mobile.karadanatv"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-6tciAR1F97m28bZ9sP8cr07WXOmyerU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
