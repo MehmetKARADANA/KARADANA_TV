@@ -79,7 +79,6 @@ class AuthViewModel : BaseViewModel() {
                         _inProcess.value = false
                         handleException(customMessage = "Kayıt Olundu.")
                     } else {
-
                         handleException(it.exception, it.exception?.message.toString())
                         _inProcess.value = false
                     }
@@ -115,27 +114,6 @@ class AuthViewModel : BaseViewModel() {
                 }
             } else {
                 handleException(it.exception, "Bilgilerinizi kontrol edin.")
-                _inProcess.value = false
-            }
-        }
-    }
-
-    fun updateUserProfile(updatedUser: User, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
-        val uid = updatedUser.uid
-        if (uid.isBlank()) {
-            onError("Geçersiz kullanıcı ID.")
-            return
-        }
-
-        viewModelScope.launch {
-            _inProcess.value = true
-            try {
-                db.collection(USERS).document(uid).set(updatedUser).await()
-                _userData.value = updatedUser
-                onSuccess()
-            } catch (e: Exception) {
-                handleException(customMessage = "Güncelleme başarısız.")
-            } finally {
                 _inProcess.value = false
             }
         }

@@ -86,7 +86,7 @@ class MainActivity : ComponentActivity() {
             }
 
             composable(DestinationScreen.LiveScreen.route) {
-                LiveScreen(navController)
+                LiveScreen(navController,authViewModel)
             }
         }
     }

@@ -3,9 +3,11 @@ package com.mobile.karadanatv.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ExitToApp
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -16,7 +18,9 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.mobile.karadanatv.R
 import com.mobile.karadanatv.ui.theme.Background
 
 
@@ -58,7 +62,7 @@ fun CustomAppBar(
                 if (showRightButton) {
                     IconButton(onClick = onRightClicked ?: {}) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                           imageVector = Icons.Filled.ExitToApp,
                             contentDescription = "Action",
                             tint = MaterialTheme.colorScheme.onSurface
                         )

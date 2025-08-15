@@ -20,6 +20,8 @@ import com.mobile.karadanatv.ui.components.BottomNavigationMenuItem
 import com.mobile.karadanatv.ui.components.CustomAppBar
 import com.mobile.karadanatv.ui.components.CustomNavigationBar
 import com.mobile.karadanatv.ui.theme.Background
+import com.mobile.karadanatv.utils.CheckSignedOut
+import com.mobile.karadanatv.viewmodels.AuthViewModel
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions
@@ -27,17 +29,24 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 @Composable
 fun LiveScreen(
-    navController: NavController,
+    navController: NavController,authViewModel : AuthViewModel
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
     val configuration = LocalConfiguration.current
     val isLandscape = configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+
+    CheckSignedOut(authViewModel,navController)
+
     Scaffold(
         Modifier
             .fillMaxSize()
             .background(Background),
         topBar = {
-            CustomAppBar(title = "Yeşil Deniz", showBackButton = false, onBackClicked = {})
+          CustomAppBar(
+                title = "Yeşil Deniz",
+                onRightClicked = { authViewModel.logout() },
+                showRightButton = true
+            )
         },
         bottomBar = {
             CustomNavigationBar(
